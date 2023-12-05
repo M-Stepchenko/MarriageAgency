@@ -28,16 +28,16 @@
                     </div>
                     <div class="form-group mt-3">
                         <label asp-for="Bithdate" class="control-label"></label>
-                        <input type="date" asp-for="Bithdate" min="1900-01-01" max="2005-12-04" class="form-control" />
+                        <input type="date" asp-for="Bithdate" min="1900-01-01" max="2005-12-19" value="@Model.Bithdate.ToString("yyyy-MM-dd")" class="form-control" />
                         <span class="text-danger small" asp-validation-for="Bithdate"></span>
                     </div>
                     <div class="form-group mt-3">
                         <label asp-for="Sex" class="control-label"></label>
-                        <input class="form-check-input" value="М" type="radio" asp-for="Sex" id="flexRadioDefault1" checked>
+                        <input class="form-check-input" value="М" type="radio" asp-for="Sex" id="flexRadioDefault1" checked="true">
                         <label class="form-check-label" for="flexRadioDefault1">
                             М
                         </label>
-                        <input class="form-check-input" value="Ж" type="radio" asp-for="Sex" id="flexRadioDefault2">
+                        <input class="form-check-input" value="Ж" type="radio" asp-for="Sex" id="flexRadioDefault2" checked="false">
                         <label class="form-check-label" for="flexRadioDefault2">
                             Ж
                         </label>

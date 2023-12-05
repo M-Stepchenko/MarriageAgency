@@ -32,15 +32,15 @@ namespace MarriageAgency.Models
 
         [Required]
         [Display(Name = "Знак зодиака")]
-        public string ZodiacSign { get; set; }
+        public int ZodiacSign { get; set; }
 
         [Required]
         [Display(Name = "Национальность")]
-        public string Nationality { get; set; }
+        public int Nationality { get; set; }
 
         [Required]
         [Display(Name = "Семейное положение")]
-        public string FamilyStatus { get; set; }
+        public int FamilyStatus { get; set; }
 
         [Display(Name = "Адрес")]
         public string? Address { get; set; }

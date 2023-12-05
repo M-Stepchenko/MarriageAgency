@@ -11,6 +11,8 @@
     </head>
     <body>
         <h1>@ViewData["Title"]</h1>
+        <input type="button" value="Изменить"
+           onclick="window.location.href='@Url.Action("InfoEdit","Account")'" />
         <ln/>
         <h3>Имя: @ViewData["Name"]</h3>
         <h4>Национальность: @ViewData["Nationality"]</h4>

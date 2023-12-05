@@ -44,9 +44,14 @@ namespace MarriageAgency.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    db.Clients.Add(new Client { Name = model.Name, Job = model.Job, Hobby = model.Hobby, UserId = user.Id });
+                    db.Clients.Add(new Client { Name = model.Name, Job = model.Job, Hobby = model.Hobby, UserId = user.Id,
+                        Address = model.Address, BadHabbits = model.BadHabbits, Bithdate = model.Bithdate.ToDateTime(TimeOnly.MinValue),
+                        Height = model.Height, Children = model.Children, DesiredPartner = model.DesiredPartner,  Weight = model.Weight,
+                        Passport = model.Passport, PhoneNumber = model.PhoneNumber, Sex = model.Sex, FamilyStatusId = model.FamilyStatus,
+                        NationalityId = model.Nationality, ZodiacSignId = model.ZodiacSign });
                     db.SaveChanges();
-                    // установка куки
+                    // установка куки и роли
+                    await _userManager.AddToRoleAsync(user, "client");
                     await _signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -126,6 +131,24 @@ namespace MarriageAgency.Controllers
             ViewData["PhoneNumber"] = client.PhoneNumber;
 
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> InfoEdit()
+        {
+            ViewBag.Nationalities = _clientsService.GetNationalities();
+            ViewBag.ZodiacSigns = _clientsService.GetZodiazSigns();
+            ViewBag.FamilyStatuses = _clientsService.GetFamilyStatuses();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var client = _clientsService.GetClientByUserId(userId);
+            var model = new RegisterViewModel {Name = client.Name, Job = client.Job, Hobby = client.Hobby,
+                        Address = client.Address, BadHabbits = client.BadHabbits, Bithdate = DateOnly.FromDateTime((DateTime)client.Bithdate),
+                        Height = (int)client.Height, Children = (int)client.Children, DesiredPartner = client.DesiredPartner,  Weight = (int)client.Weight,
+                        Passport = client.Passport, PhoneNumber = client.PhoneNumber, Sex = client.Sex, FamilyStatus = (int)client.FamilyStatus.Id,
+                        Nationality = (int)client.Nationality.Id, ZodiacSign = (int)client.ZodiacSign.Id };
+
+            return View("Register", model);
         }
     }
 }
