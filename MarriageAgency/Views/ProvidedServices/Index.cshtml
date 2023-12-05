@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Ваши заказы";
+    var list = (List<ProvidedService>) ViewData["List"];
+}
+
+<h1>Ваши заказы</h1>
+
+<TABLE border="1">
+    <TR>
+        <TH>Название услуги</TH>
+        <TH>Сотрудник</TH>
+        <TH>Дата</TH>
+        <TH>Цена</TH>
+    </TR>
+
+@foreach (var item in list)
+    {
+    <TR>
+        <TD>@item.Service.Name</TD>
+        <TD>@item.Employee.Name</TD>
+        <TD>@DateOnly.FromDateTime((DateTime)item.Date)</TD>
+        <TD>@item.Service.Cost</TD>
+    </TR>
+    }
+</TABLE>

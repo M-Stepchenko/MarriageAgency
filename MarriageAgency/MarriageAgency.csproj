@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="authorization\**" />
+    <Compile Remove="Controllers\authorization\**" />
+    <Compile Remove="Migrations\authorization\**" />
+    <Compile Remove="Properties\authorization\**" />
+    <Content Remove="authorization\**" />
+    <Content Remove="Controllers\authorization\**" />
+    <Content Remove="Migrations\authorization\**" />
+    <Content Remove="Properties\authorization\**" />
+    <EmbeddedResource Remove="authorization\**" />
+    <EmbeddedResource Remove="Controllers\authorization\**" />
+    <EmbeddedResource Remove="Migrations\authorization\**" />
+    <EmbeddedResource Remove="Properties\authorization\**" />
+    <None Remove="authorization\**" />
+    <None Remove="Controllers\authorization\**" />
+    <None Remove="Migrations\authorization\**" />
+    <None Remove="Properties\authorization\**" />
+    <_WebToolingArtifacts Remove="Properties\authorization\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\Register.cshtml" />
+  </ItemGroup>
+
+</Project>

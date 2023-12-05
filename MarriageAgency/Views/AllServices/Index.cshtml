@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Услуги";
+    var list = (List<AllService>) ViewData["List"];
+}
+
+<h1>Услуги</h1>
+
+<TABLE border="1">
+    <TR>
+        <TH>Название услуги</TH>
+        <TH>Описание</TH>
+        <TH>Цена</TH>
+    </TR>
+
+@foreach (var item in list)
+    {
+    <TR>
+        <TD>@item.Name</TD>
+        <TD>@item.Description</TD>
+        <TD>@item.Cost</TD>
+    </TR>
+    }
+
+</TABLE>

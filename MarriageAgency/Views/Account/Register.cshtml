@@ -1,0 +1,166 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <div class="container col-md-8 mx-auto">
+        <h2 class="mb-4 text-center">Регистрация</h2>
+        <div class="card " style="border-radius: 15px;">
+            <div class="card-body">
+                <form method="post" asp-controller="Account" asp-action="Register">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Login" class="control-label"></label>
+                        <input type="text" asp-for="Login" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Login"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input type="text" asp-for="Name" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Name"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Bithdate" class="control-label"></label>
+                        <input type="date" asp-for="Bithdate" min="1900-01-01" max="2005-12-04" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Bithdate"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Sex" class="control-label"></label>
+                        <input class="form-check-input" value="М" type="radio" asp-for="Sex" id="flexRadioDefault1" checked>
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            М
+                        </label>
+                        <input class="form-check-input" value="Ж" type="radio" asp-for="Sex" id="flexRadioDefault2">
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            Ж
+                        </label>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Height" class="control-label"></label>
+                        <input type="number" asp-for="Height" min="120" max="220" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Height"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Weight" class="control-label"></label>
+                        <input type="number" asp-for="Weight" min="35" max="350" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Weight"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Nationality" class="control-label"></label>
+                        <select asp-for="Nationality" asp-items="@ViewBag.Nationalities"></select>
+                        <span class="text-danger small" asp-validation-for="Nationality"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="ZodiacSign" class="control-label"></label>
+                        <select asp-for="ZodiacSign" asp-items="@ViewBag.ZodiacSigns"></select>
+                        <span class="text-danger small" asp-validation-for="ZodiacSign"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="FamilyStatus" class="control-label"></label>
+                        <select asp-for="FamilyStatus" asp-items="@ViewBag.FamilyStatuses"></select>
+                        <span class="text-danger small" asp-validation-for="FamilyStatus"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Children" class="control-label"></label>
+                        <input type="number" asp-for="Children" min="0" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Children"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="PhoneNumber" class="control-label"></label>
+                        <input type="string" placeholder="XX-XX-XX" pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}" asp-for="PhoneNumber" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="PhoneNumber"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Job" class="control-label"></label>
+                        <input type="text" asp-for="Job" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Job"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Hobby" class="control-label"></label>
+                        <input type="text" asp-for="Hobby" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Hobby"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="BadHabbits" class="control-label"></label>
+                        <input type="text" asp-for="BadHabbits" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="BadHabbits"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Passport" class="control-label"></label>
+                        <input type="text" asp-for="Passport" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Passport"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Address" class="control-label"></label>
+                        <input type="text" asp-for="Address" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Address"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="DesiredPartner" class="control-label"></label>
+                        <input type="text" asp-for="DesiredPartner" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="DesiredPartner"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input type="password" asp-for="Password" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Password"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="PasswordConfirm" class="control-label"></label>
+                        <input type="password" asp-for="PasswordConfirm" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="PasswordConfirm"></span>
+                    </div>
+                    <div class="text-center form-group mt-3" style="margin-bottom: -5px">
+                        <input type="submit" value="Регистрация" class="btn btn-outline-secondary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!--<h2>Регистрация нового пользователя</h2>
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Login"></label><br />
+        <input asp-for="Login" />
+        <span asp-validation-for="Login"></span>
+    </div>
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="Surname"></label><br />
+        <input asp-for="Surname" />
+        <span asp-validation-for="Surname"></span>
+    </div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="PasswordConfirm"></label><br />
+        <input asp-for="PasswordConfirm" />
+        <span asp-validation-for="PasswordConfirm"></span>
+    </div>
+    <div style="margin-top: 10px">
+        <input class="btn btn-primary" type="submit" value="Регистрация" />
+    </div>
+</form>-->
