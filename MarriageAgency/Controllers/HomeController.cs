@@ -17,7 +17,6 @@ namespace MarriageAgency.Controllers
         public HomeController(MarriageAgencyContext context, ILogger<HomeController> logger)
         {
             db = context;
-            //SQLCommands.InitialCreation(db);
             _logger = logger;
         }
 

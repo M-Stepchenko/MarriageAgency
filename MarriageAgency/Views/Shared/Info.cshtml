@@ -1,7 +1,7 @@
 ﻿@model LoginViewModel
 
 @{
-    ViewData["Title"] = "Мои данные";
+    ViewData["Title"] = "Info";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,10 +10,15 @@
     <head>
     </head>
     <body>
-        <h1>@ViewData["Title"]</h1>
+        <h1>@ViewData["ViewTitle"]</h1>
         <input type="button" value="Изменить"
-           onclick="window.location.href='@Url.Action("InfoEdit","Account")'" />
-        <ln/>
+           onclick="window.location.href='@Url.Action("InfoEdit", "Account", new { clientId = ViewData["Id"]})'" />
+        @if (User.IsInRole("admin"))
+        {
+            <input type="button" value="Удалить"
+               onclick="window.location.href='@Url.Action("Delete", "Clients", new { clientId = ViewData["Id"]})'" />
+        }
+        <hr/>
         <h3>Имя: @ViewData["Name"]</h3>
         <h4>Национальность: @ViewData["Nationality"]</h4>
         <h4>Пол: @ViewData["Sex"]</h4>
@@ -28,7 +33,7 @@
         <h4>Хобби: @ViewData["Hobby"]</h4>
         <h4>Вредные привычки: @ViewData["BadHabbits"]</h4>
         <h4>Адрес: @ViewData["Address"]</h4>
-        <h4>Пасспорт: @ViewData["Passport"]</h4>
+        <h4>Паспорт: @ViewData["Passport"]</h4>
         <h4>Ищу: @ViewData["DesiredPartner"]</h4>
     </body>
 </html>

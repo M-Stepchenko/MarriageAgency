@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Клиенты";
+    var list = (List<Client>)ViewData["List"];
+}
+
+<h1>Клиенты</h1>
+<input type="button" value="Добавить клиента"
+       onclick="window.location.href='@Url.Action("Register", "Account")'" />
+       <br>
+<TABLE border="1">
+    <TR>
+        <TH>Имя</TH>
+        <TH>Пол</TH>
+        <TH>Дата рождения</TH>
+        <TH>Номер телефона</TH>
+    </TR>
+
+    @foreach (var item in list)
+    {
+        <TR>
+            <TD><a class="nav-link text-dark" href="@Url.Action("Info","Clients", new {clientId = item.Id})">@item.Name</a></TD>
+            <TD>@item.Sex</TD>
+            <TD>@DateOnly.FromDateTime((DateTime)item.Bithdate)</TD>
+            <TD>@item.PhoneNumber</TD>
+        </TR>
+    }
+</TABLE>

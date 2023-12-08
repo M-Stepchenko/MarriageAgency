@@ -1,0 +1,42 @@
+﻿@model NewOrderViewModel
+
+@{
+    ViewData["Title"] = "New Order";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <div class="container col-md-8 mx-auto">
+        <h2 class="mb-4 text-center">Оформление нового заказа</h2>
+        <div class="card " style="border-radius: 15px;">
+            <div class="card-body">
+                <form method="post" asp-controller="ProvidedServices" asp-action="NewOrder">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Date" class="control-label"></label>
+                        <input type="date" asp-for="Date" value="2024-01-01" min="2024-01-01" max="2024-12-31" class="form-control" />
+                        <span class="text-danger small" asp-validation-for="Date"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <select asp-for="Name" asp-items="@ViewBag.AllServices"></select>
+                        <span class="text-danger small" asp-validation-for="Name"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label asp-for="Employee" class="control-label"></label>
+                        <select asp-for="Employee" asp-items="@ViewBag.Employees"></select>
+                        <span class="text-danger small" asp-validation-for="Employee"></span>
+                    </div>
+                    <div class="text-center form-group mt-3">
+                        <input type="submit" value="Оформить заказ" class="btn btn-outline-secondary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

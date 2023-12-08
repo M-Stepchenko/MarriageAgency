@@ -15,7 +15,6 @@ namespace MarriageAgency.Controllers
             employeesService = _employeesService;
         }
 
-        // GET: Employees
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 290)]
         public ActionResult Index()
         {

@@ -5,6 +5,8 @@ using MarriageAgency.Models;
 using Microsoft.EntityFrameworkCore;
 using MarriageAgency.Services;
 using System.Security.Claims;
+using System.Net;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MarriageAgency.Controllers
 {
@@ -31,28 +33,47 @@ namespace MarriageAgency.Controllers
             ViewBag.ZodiacSigns = _clientsService.GetZodiazSigns();
             ViewBag.FamilyStatuses = _clientsService.GetFamilyStatuses();
 
+            ViewData[("ViewTitle")] = User.IsInRole("admin") ? "Добавление клиента" : "Регистрация";
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 User user = new User { UserName = model.Login };
-
                 // добавляем пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    db.Clients.Add(new Client { Name = model.Name, Job = model.Job, Hobby = model.Hobby, UserId = user.Id,
-                        Address = model.Address, BadHabbits = model.BadHabbits, Bithdate = model.Bithdate.ToDateTime(TimeOnly.MinValue),
-                        Height = model.Height, Children = model.Children, DesiredPartner = model.DesiredPartner,  Weight = model.Weight,
-                        Passport = model.Passport, PhoneNumber = model.PhoneNumber, Sex = model.Sex, FamilyStatusId = model.FamilyStatus,
-                        NationalityId = model.Nationality, ZodiacSignId = model.ZodiacSign });
+                    db.Clients.Add(new Client
+                    {
+                        UserId = user.Id,
+                        Name = model.Name,
+                        Job = model.Job,
+                        Hobby = model.Hobby,
+                        Address = model.Address,
+                        BadHabbits = model.BadHabbits,
+                        Bithdate = model.Bithdate.ToDateTime(TimeOnly.MinValue),
+                        Height = model.Height,
+                        Children = model.Children,
+                        DesiredPartner = model.DesiredPartner,
+                        Weight = model.Weight,
+                        Passport = model.Passport,
+                        PhoneNumber = model.PhoneNumber,
+                        Sex = model.Sex,
+                        FamilyStatusId = model.FamilyStatus,
+                        NationalityId = model.Nationality,
+                        ZodiacSignId = model.ZodiacSign
+                    });
                     db.SaveChanges();
                     // установка куки и роли
                     await _userManager.AddToRoleAsync(user, "client");
-                    await _signInManager.SignInAsync(user, false);
+                    if(!User.IsInRole("admin"))
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                    }
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -63,6 +84,10 @@ namespace MarriageAgency.Controllers
                     }
                 }
             }
+            ViewBag.Nationalities = _clientsService.GetNationalities();
+            ViewBag.ZodiacSigns = _clientsService.GetZodiazSigns();
+            ViewBag.FamilyStatuses = _clientsService.GetFamilyStatuses();
+
             return View(model);
         }
 
@@ -113,6 +138,8 @@ namespace MarriageAgency.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var client = _clientsService.GetClientByUserId(userId);
 
+            ViewData["ViewTitle"] = "Мои данные";
+            ViewData["Id"] = client.Id;
             ViewData["Name"] = client.Name;
             ViewData["Bithdate"] = DateOnly.FromDateTime((DateTime)client.Bithdate);
             ViewData["Nationality"] = client.Nationality.Name;
@@ -134,21 +161,58 @@ namespace MarriageAgency.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> InfoEdit()
+        [Route("Account/Info/Edit")]
+        public async Task<IActionResult> InfoEdit(int clientId)
         {
             ViewBag.Nationalities = _clientsService.GetNationalities();
             ViewBag.ZodiacSigns = _clientsService.GetZodiazSigns();
             ViewBag.FamilyStatuses = _clientsService.GetFamilyStatuses();
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var client = _clientsService.GetClientByUserId(userId);
-            var model = new RegisterViewModel {Name = client.Name, Job = client.Job, Hobby = client.Hobby,
+            
+            var client = _clientsService.GetClientById(clientId);
+            var model = new InfoEditViewModel {Id = client.Id, Name = client.Name, Job = client.Job, Hobby = client.Hobby,
                         Address = client.Address, BadHabbits = client.BadHabbits, Bithdate = DateOnly.FromDateTime((DateTime)client.Bithdate),
                         Height = (int)client.Height, Children = (int)client.Children, DesiredPartner = client.DesiredPartner,  Weight = (int)client.Weight,
-                        Passport = client.Passport, PhoneNumber = client.PhoneNumber, Sex = client.Sex, FamilyStatus = (int)client.FamilyStatus.Id,
-                        Nationality = (int)client.Nationality.Id, ZodiacSign = (int)client.ZodiacSign.Id };
+                        Passport = client.Passport, PhoneNumber = client.PhoneNumber, Sex = client.Sex, FamilyStatus = client.FamilyStatus.Id,
+                        Nationality = client.Nationality.Id, ZodiacSign = client.ZodiacSign.Id };
 
-            return View("Register", model);
+            return View("InfoEdit", model);
+        }
+
+        [HttpPost]
+        [Route("Account/Info/Edit")]
+        public async Task<IActionResult> InfoEdit(InfoEditViewModel model, int clientId)
+        {
+            if (ModelState.IsValid)
+            {
+                Client client = db.Clients.SingleOrDefault(c => c.Id == clientId);
+                if (client != null)
+                {
+                    client.Name = model.Name;
+                    client.Job = model.Job;
+                    client.Hobby = model.Hobby;
+                    client.Address = model.Address;
+                    client.BadHabbits = model.BadHabbits;
+                    client.Bithdate = model.Bithdate.ToDateTime(TimeOnly.MinValue);
+                    client.Height = model.Height;
+                    client.Children = model.Children;
+                    client.DesiredPartner = model.DesiredPartner;
+                    client.Weight = model.Weight;
+                    client.Passport = model.Passport;
+                    client.PhoneNumber = model.PhoneNumber;
+                    client.Sex = model.Sex;
+                    client.FamilyStatusId = model.FamilyStatus;
+                    client.NationalityId = model.Nationality;
+                    client.ZodiacSignId = model.ZodiacSign;
+
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            ViewBag.Nationalities = _clientsService.GetNationalities();
+            ViewBag.ZodiacSigns = _clientsService.GetZodiazSigns();
+            ViewBag.FamilyStatuses = _clientsService.GetFamilyStatuses();
+
+            return View(model);
         }
     }
 }
