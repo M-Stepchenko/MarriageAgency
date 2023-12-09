@@ -1,5 +1,4 @@
 ﻿using MarriageAgency.Models;
-using MarriageAgency.Scripts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

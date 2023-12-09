@@ -28,22 +28,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AllServices" asp-action="Index">Услуги</a>
                         </li>
-                        @if (User.IsInRole("client"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ProvidedServices" asp-action="Index">Мои заказы</a>
-                            </li>
-                        }
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("client"))
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ProvidedServices" asp-action="Index">Мои заказы</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Info">@User.Identity.Name</a>
                                 </li>
                             }
                             else
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ProvidedServices" asp-action="Index">Оказанные услуги</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">Клиенты</a>
                                 </li>

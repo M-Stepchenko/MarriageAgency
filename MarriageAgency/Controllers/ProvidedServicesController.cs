@@ -9,7 +9,6 @@ using System.Security.Claims;
 
 namespace MarriageAgency.Controllers
 {
-    [Authorize(Roles="client")]
     public class ProvidedServicesController : Controller
     {
         MarriageAgencyContext db;
@@ -17,6 +16,8 @@ namespace MarriageAgency.Controllers
         AllServicesService allServicesService;
         EmployeesService employeesService;
         ClientsService clientsService;
+        
+        private int pageSize = 20;
 
         public ProvidedServicesController(MarriageAgencyContext _context, ClientsService _clientsService, ProvidedServicesService _providedServicesService, AllServicesService _allService, EmployeesService _employeesService)
         {
@@ -27,13 +28,22 @@ namespace MarriageAgency.Controllers
             clientsService = _clientsService;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int pageNumber = 1)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ViewData["List"] = providedServicesService.GetProvidedServices(userId);
-            return View();
+            var userId = "";
+
+            if (User.IsInRole("client"))
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            ViewData["List"] = providedServicesService.GetProvidedServices(userId, pageNumber, pageSize);
+            int count = providedServicesService.GetRowCount(userId);
+            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel();
+            viewModel.Pagination = new PaginationViewModel(count, pageNumber, pageSize);
+            return View(viewModel);
         }
 
+        [Authorize(Roles="client")]
         [HttpGet]
         public ActionResult NewOrder()
         {
@@ -55,6 +65,7 @@ namespace MarriageAgency.Controllers
             return View();
         }
 
+        [Authorize(Roles = "client")]
         [HttpPost]
         public async Task<IActionResult> NewOrder(NewOrderViewModel model)
         {

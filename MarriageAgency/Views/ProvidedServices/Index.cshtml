@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ProvidedServicesViewModel
+@{
     ViewData["Title"] = "Ваши заказы";
     var list = (List<ProvidedService>) ViewData["List"];
 }
@@ -9,7 +10,12 @@
 <TABLE border="1">
     <TR>
         <TH>Название услуги</TH>
+        <TH>Описание</TH>
         <TH>Сотрудник</TH>
+        @if (User.IsInRole("admin"))
+        {
+            <TH>Клиент</TH>
+        }
         <TH>Дата</TH>
         <TH>Цена</TH>
     </TR>
@@ -18,9 +24,55 @@
     {
     <TR>
         <TD>@item.Service.Name</TD>
+        <TD>@item.Service.Description</TD>
         <TD>@item.Employee.Name</TD>
+            @if (User.IsInRole("admin"))
+            {
+                <TD>@item.Client.Name</TD>
+            }
         <TD>@DateOnly.FromDateTime((DateTime)item.Date)</TD>
         <TD>@item.Service.Cost</TD>
     </TR>
     }
-</TABLE>
+</TABLE><br>
+<nav aria-label="...">
+    <ul class="pagination">
+        @if (Model.Pagination.HasFirstPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = 1})" tabindex="-1">На первую</a>
+            </li>
+        }
+        @if (Model.Pagination.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = Model.Pagination.PageNumber - 1})">На предыдущую</a>
+            </li>
+        }
+        @foreach (var number in Model.Pagination.Pages)
+        {
+            @if (number == Model.Pagination.PageNumber)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = number})">@number</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = number})">@number</a></li>
+            }
+        }
+        @if (Model.Pagination.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = Model.Pagination.PageNumber + 1})">На следущую</a>
+            </li>
+        }
+        @if (Model.Pagination.HasLastPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = Model.Pagination.TotalPages})">На последнюю</a>
+            </li>
+        }
+    </ul>
+</nav>
