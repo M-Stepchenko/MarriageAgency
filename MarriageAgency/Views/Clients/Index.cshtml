@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "Клиенты";
+﻿@model ClientsViewModel
+@{
+    ViewData["Title"] = "Clients";
     var list = (List<Client>)ViewData["List"];
 }
 
@@ -25,3 +26,4 @@
         </TR>
     }
 </TABLE>
+@await Html.PartialAsync("Pagination", Model.Pagination)

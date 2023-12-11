@@ -1,12 +1,40 @@
 ﻿@model ProvidedServicesViewModel
 @{
-    ViewData["Title"] = "Ваши заказы";
+    ViewData["Title"] = "Provided Services";
     var list = (List<ProvidedService>) ViewData["List"];
 }
 
-<h1>Ваши заказы</h1>
-<input type="button" value="Оформление нового заказа"
-       onclick="window.location.href='@Url.Action("NewOrder", "ProvidedServices")'" />
+@if (User.IsInRole("client"))
+{
+    <h1>Ваши заказы</h1>
+    <input type="button" value="Оформление нового заказа"
+           onclick="window.location.href='@Url.Action("NewOrder", "ProvidedServices")'" />
+}
+@if (User.IsInRole("admin"))
+{
+    <h1>Оказанные услуги</h1>
+
+    <form method="post" class="mb-4" href="@Url.Action("Index", "ProvidedServices")">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label asp-for="EmployeeId" class="control-label"></label>
+                <select class="form-select" asp-for="EmployeeId" asp-items="@ViewBag.Employees"></select>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="ServiceId" class="control-label"></label>
+                <select class="form-select" asp-for="ServiceId" asp-items="@ViewBag.AllServices"></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="UserName" class="control-label"></label>
+                <input type="text" placeholder="Все клиенты" value="@Model.UserName" asp-for="UserName" class="form-control" />
+            </div>
+            <div class="form-group col-md-1" style="align-self: flex-end">
+                <input type="submit" value="Найти" class="btn btn-outline-secondary" />
+            </div>
+        </div>
+    </form>
+}
+
 <TABLE border="1">
     <TR>
         <TH>Название услуги</TH>
@@ -35,44 +63,4 @@
     </TR>
     }
 </TABLE><br>
-<nav aria-label="...">
-    <ul class="pagination">
-        @if (Model.Pagination.HasFirstPage)
-        {
-            <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = 1})" tabindex="-1">На первую</a>
-            </li>
-        }
-        @if (Model.Pagination.HasPreviousPage)
-        {
-            <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = Model.Pagination.PageNumber - 1})">На предыдущую</a>
-            </li>
-        }
-        @foreach (var number in Model.Pagination.Pages)
-        {
-            @if (number == Model.Pagination.PageNumber)
-            {
-                <li class="page-item active">
-                    <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = number})">@number</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item"><a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = number})">@number</a></li>
-            }
-        }
-        @if (Model.Pagination.HasNextPage)
-        {
-            <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = Model.Pagination.PageNumber + 1})">На следущую</a>
-            </li>
-        }
-        @if (Model.Pagination.HasLastPage)
-        {
-            <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index","ProvidedServices", new {pageNumber = Model.Pagination.TotalPages})">На последнюю</a>
-            </li>
-        }
-    </ul>
-</nav>
+@await Html.PartialAsync("Pagination", Model.Pagination)

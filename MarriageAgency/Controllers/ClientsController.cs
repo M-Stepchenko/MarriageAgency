@@ -11,16 +11,21 @@ namespace MarriageAgency.Controllers
     {
         MarriageAgencyContext db;
         ClientsService service;
+        private int pageSize = 20;
         public ClientsController(MarriageAgencyContext _context, ClientsService _service)
         {
             db = _context;
             service = _service;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int pageNumber = 1)
         {
-            ViewData["List"] = service.GetAllClients();
-            return View();
+            ViewData["List"] = service.GetAllClients(pageNumber, pageSize);
+            ClientsViewModel clientsViewModel = new ClientsViewModel();
+            int count = service.GetRowCount();
+            clientsViewModel.Pagination = new PaginationViewModel(count, pageNumber, pageSize);
+
+            return View(clientsViewModel);
         }
 
         public ActionResult Info(int clientId)
@@ -28,7 +33,6 @@ namespace MarriageAgency.Controllers
             var client = service.GetClientById(clientId);
             ViewData["ViewTitle"] = "Данные клиента";
             ViewData["Id"] = clientId;
-
             ViewData["Name"] = client.Name;
             ViewData["Bithdate"] = DateOnly.FromDateTime((DateTime)client.Bithdate);
             ViewData["Nationality"] = client.Nationality.Name;

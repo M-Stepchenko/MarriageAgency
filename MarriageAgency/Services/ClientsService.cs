@@ -43,7 +43,7 @@ namespace MarriageAgency.Services
             return client;
         }
 
-        public List<Client> GetAllClients()
+        public List<Client> GetAllClients(int pageNumber, int pageSize)
         {
             var client = (from c in db.Clients
                           select new Client
@@ -53,7 +53,7 @@ namespace MarriageAgency.Services
                               Bithdate = c.Bithdate,
                               Sex = c.Sex,
                               PhoneNumber = c.PhoneNumber,
-                          }).ToList();
+                          }).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             return client;
         }
@@ -112,6 +112,13 @@ namespace MarriageAgency.Services
         {
             var familyStatuses = db.FamilyStatuses.Select(f => new SelectListItem { Value = f.Id.ToString(), Text = f.Name }).ToList();
             return familyStatuses;
+        }
+
+        public int GetRowCount()
+        {
+            var count = db.Clients.Count();
+
+            return count;
         }
     }
 }

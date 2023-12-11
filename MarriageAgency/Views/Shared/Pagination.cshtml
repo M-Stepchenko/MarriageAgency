@@ -1,0 +1,44 @@
+﻿@model PaginationViewModel
+
+<nav aria-label="...">
+    <ul class="pagination">
+        @if (Model.HasFirstPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new {pageNumber = 1})" tabindex="-1">На первую</a>
+            </li>
+        }
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new {pageNumber = Model.PageNumber - 1})">На предыдущую</a>
+            </li>
+        }
+        @foreach (var number in Model.Pages)
+        {
+            @if (number == Model.PageNumber)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="@Url.Action("Index", new {pageNumber = number})">@number</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("Index", new {pageNumber = number})">@number</a></li>
+            }
+        }
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new {pageNumber = Model.PageNumber + 1})">На следущую</a>
+            </li>
+        }
+        @if (Model.HasLastPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new {pageNumber = Model.TotalPages})">На последнюю</a>
+            </li>
+        }
+    </ul>
+</nav>
+

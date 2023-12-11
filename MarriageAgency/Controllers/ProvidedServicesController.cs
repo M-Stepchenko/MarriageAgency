@@ -28,18 +28,66 @@ namespace MarriageAgency.Controllers
             clientsService = _clientsService;
         }
 
+        [HttpGet]
         public ActionResult Index(int pageNumber = 1)
         {
-            var userId = "";
+            int employeeId = 0;
+            int serviceId = 0;
+            string userName = "all";
+            bool withEmptyItem = true;
+            List<SelectListItem> employees = employeesService.GetEmployeeAsSelectListItems(withEmptyItem);
+            List<SelectListItem> allServices = allServicesService.GetAllServicesAsSelectListItems(withEmptyItem);
+            if (User.IsInRole("admin"))
+            {
+                HttpContext.Request.Cookies.TryGetValue("EmployeeId", out string? employee);
+                HttpContext.Request.Cookies.TryGetValue("ServiceId", out string? service);
+                HttpContext.Request.Cookies.TryGetValue("Client", out string? client);
 
+                HttpContext.Response.Cookies.Append("EmployeeId", employee);
+                HttpContext.Response.Cookies.Append("ServiceId", service);
+                HttpContext.Response.Cookies.Append("Client", client == null ? "all" : client);
+
+                employeeId = employee == null ? 0 : Convert.ToInt32(employee);
+                serviceId = service == null ? 0 : Convert.ToInt32(service);
+                userName = client == null ? "all" : client;
+            }
+
+            
+            var userId = "";
             if (User.IsInRole("client"))
             {
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
-            ViewData["List"] = providedServicesService.GetProvidedServices(userId, pageNumber, pageSize);
-            int count = providedServicesService.GetRowCount(userId);
-            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel();
+            ViewData["List"] = providedServicesService.GetProvidedServices(userId, pageNumber, pageSize, employeeId, serviceId, userName);
+            int count = providedServicesService.GetRowCount(userId, pageNumber, pageSize, employeeId, serviceId, userName);
+            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel { EmployeeId = employeeId, ServiceId = serviceId, UserName = userName };
             viewModel.Pagination = new PaginationViewModel(count, pageNumber, pageSize);
+
+            ViewBag.Employees = employees;
+            ViewBag.AllServices = allServices;
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public ActionResult Index(ProvidedServicesViewModel model)
+        {
+            HttpContext.Response.Cookies.Append("EmployeeId", model.EmployeeId.ToString());
+            HttpContext.Response.Cookies.Append("ServiceId", model.ServiceId.ToString());
+            HttpContext.Response.Cookies.Append("Client", model.UserName == null ? "all" : model.UserName);
+
+            bool withEmptyItem = true;
+            var userId = "";
+            List<SelectListItem> employees = employeesService.GetEmployeeAsSelectListItems(withEmptyItem);
+            List<SelectListItem> allServices = allServicesService.GetAllServicesAsSelectListItems(withEmptyItem);
+
+            ViewData["List"] = providedServicesService.GetProvidedServices(userId, 1, pageSize, model.EmployeeId, model.ServiceId, model.UserName);
+            int count = providedServicesService.GetRowCount(userId, 1, pageSize, model.EmployeeId, model.ServiceId, model.UserName);
+            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel { EmployeeId = model.EmployeeId, ServiceId = model.ServiceId, UserName = model.UserName };
+            viewModel.Pagination = new PaginationViewModel(count, 1, pageSize);
+
+            ViewBag.Employees = employees;
+            ViewBag.AllServices = allServices;
             return View(viewModel);
         }
 
@@ -47,18 +95,8 @@ namespace MarriageAgency.Controllers
         [HttpGet]
         public ActionResult NewOrder()
         {
-            List<SelectListItem> employees = new List<SelectListItem>();
-            List<SelectListItem> allServices = new List<SelectListItem>();
-
-            allServicesService.GetAllServices().ForEach(s =>
-                {
-                    allServices.Add(new SelectListItem { Value = s.Id.ToString(), Text = s.Name + " " + s.Cost.ToString() + " р." });
-                });
-
-            employeesService.GetEmployees().ForEach(s =>
-            {
-                employees.Add(new SelectListItem { Value = s.Id.ToString(), Text = s.Name });
-            });
+            List<SelectListItem> employees = employeesService.GetEmployeeAsSelectListItems();
+            List<SelectListItem> allServices = allServicesService.GetAllServicesAsSelectListItems();
 
             ViewBag.Employees = employees;
             ViewBag.AllServices = allServices;

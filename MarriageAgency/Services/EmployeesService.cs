@@ -1,4 +1,5 @@
 ﻿using MarriageAgency.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MarriageAgency.Services
 {
@@ -13,6 +14,23 @@ namespace MarriageAgency.Services
         public List<Employee> GetEmployees()
         {
             return db.Employees.ToList();
+        }
+
+        public List<SelectListItem> GetEmployeeAsSelectListItems(bool withEmptyItem = false)
+        {
+            List<SelectListItem> employees = new List<SelectListItem>();
+            
+            if (withEmptyItem) 
+            {
+                employees.Add(new SelectListItem { Value = "", Text = "Все сотрудники" });   
+            }
+
+            GetEmployees().ForEach(s =>
+            {
+                employees.Add(new SelectListItem { Value = s.Id.ToString(), Text = s.Name });
+            });
+
+            return employees;
         }
     }
 }
