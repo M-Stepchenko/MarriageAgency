@@ -1,6 +1,4 @@
-﻿@model LoginViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Info";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
@@ -10,30 +8,80 @@
     <head>
     </head>
     <body>
-        <h1>@ViewData["ViewTitle"]</h1>
-        <input type="button" value="Изменить"
+    <h1 style="margin: 20px 0">@ViewData["ViewTitle"]</h1>
+    <input type="button" class="btn btn-outline-primary" value="Изменить"
            onclick="window.location.href='@Url.Action("InfoEdit", "Account", new { clientId = ViewData["Id"]})'" />
         @if (User.IsInRole("admin"))
         {
-            <input type="button" value="Удалить"
+        <input type="button" class="btn btn-outline-primary" value="Удалить"
                onclick="window.location.href='@Url.Action("Delete", "Clients", new { clientId = ViewData["Id"]})'" />
         }
-        <hr/>
-        <h3>Имя: @ViewData["Name"]</h3>
-        <h4>Национальность: @ViewData["Nationality"]</h4>
-        <h4>Пол: @ViewData["Sex"]</h4>
-        <h4>Дата рождения: @ViewData["Bithdate"]</h4>
-        <h4>Рост: @ViewData["Height"] см</h4>
-        <h4>Вес: @ViewData["Weight"] кг</h4>
-        <h4>Семейный статус: @ViewData["FamilyStatus"]</h4>
-        <h4>Дети: @ViewData["Children"]</h4>
-        <h4>Номер телефона: @ViewData["PhoneNumber"]</h4>
-        <h4>По гороскопу: @ViewData["ZodiacSign"]</h4>
-        <h4>Место работы: @ViewData["Job"]</h4>
-        <h4>Хобби: @ViewData["Hobby"]</h4>
-        <h4>Вредные привычки: @ViewData["BadHabbits"]</h4>
-        <h4>Адрес: @ViewData["Address"]</h4>
-        <h4>Паспорт: @ViewData["Passport"]</h4>
-        <h4>Ищу: @ViewData["DesiredPartner"]</h4>
+    <br><br>
+    <TABLE border="1" class="table table-striped">
+        <TR>
+            <TD>Имя</TD>
+            <TD>@ViewData["Name"]</TD>
+        </TR>
+        <TR>
+            <TD>Национальность</TD>
+            <TD>@ViewData["Nationality"]</TD>
+        </TR>
+        <TR>
+            <TD>Пол</TD>
+            <TD>@ViewData["Sex"]</TD>
+        </TR>
+        <TR>
+            <TD>Дата рождения</TD>
+            <TD>@ViewData["Bithdate"]</TD>
+        </TR>
+        <TR>
+            <TD>Рост</TD>
+            <TD>@ViewData["Height"]</TD>
+        </TR>
+        <TR>
+            <TD>Вес</TD>
+            <TD>@ViewData["Weight"]</TD>
+        </TR>
+        <TR>
+            <TD>Семейный статус</TD>
+            <TD>@ViewData["FamilyStatus"]</TD>
+        </TR>
+        <TR>
+            <TD>Дети</TD>
+            <TD>@ViewData["Children"]</TD>
+        </TR>
+        <TR>
+            <TD>Номер телефона</TD>
+            <TD>@ViewData["PhoneNumber"]</TD>
+        </TR>
+        <TR>
+            <TD>Знак зодиака</TD>
+            <TD>@ViewData["ZodiacSign"]</TD>
+        </TR>
+        <TR>
+            <TD>Работа</TD>
+            <TD>@ViewData["Job"]</TD>
+        </TR>
+        <TR>
+            <TD>Хобби</TD>
+            <TD>@ViewData["Hobby"]</TD>
+        </TR>
+        <TR>
+            <TD>Вредные привычки</TD>
+            <TD>@ViewData["BadHabbits"]</TD>
+        </TR>
+        <TR>
+            <TD>Адрес</TD>
+            <TD>@ViewData["Address"]</TD>
+        </TR>
+        <TR>
+            <TD>Пасспортные данные</TD>
+            <TD>@ViewData["Passport"]</TD>
+        </TR>
+        <TR>
+            <TD>Искомый партнер</TD>
+            <TD>@ViewData["DesiredPartner"]</TD>
+        </TR>
+    </TABLE>
     </body>
 </html>

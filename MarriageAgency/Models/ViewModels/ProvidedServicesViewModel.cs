@@ -17,5 +17,7 @@ namespace MarriageAgency.Models
 
         [Display(Name = "Оказанная услуга")]
         public int ServiceId { get; set; }
+
+        public int Count {  get; set; }
     }
 }

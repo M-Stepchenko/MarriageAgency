@@ -73,6 +73,9 @@ namespace MarriageAgency.Controllers
                     if(!User.IsInRole("admin"))
                     {
                         await _signInManager.SignInAsync(user, false);
+                        HttpContext.Response.Cookies.Append("EmployeeId", "0");
+                        HttpContext.Response.Cookies.Append("ServiceId", "0");
+                        HttpContext.Response.Cookies.Append("Client", model.Login);
                     }
                     return RedirectToAction("Index", "Home");
                 }
@@ -106,6 +109,9 @@ namespace MarriageAgency.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
+                    HttpContext.Response.Cookies.Append("EmployeeId", "0");
+                    HttpContext.Response.Cookies.Append("ServiceId", "0");
+                    HttpContext.Response.Cookies.Append("Client", model.Login == "admin" ? "all" : model.Login);
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);

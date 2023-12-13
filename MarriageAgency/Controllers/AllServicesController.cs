@@ -15,7 +15,6 @@ namespace MarriageAgency.Controllers
             allServicesService = _allServicesService;
         }
 
-       //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 290)]
         public ActionResult Index()
         {
             ViewData["List"] = allServicesService.GetAllServices();

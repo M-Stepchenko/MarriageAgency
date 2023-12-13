@@ -15,7 +15,6 @@ namespace MarriageAgency.Controllers
             employeesService = _employeesService;
         }
 
-        //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 290)]
         public ActionResult Index()
         {
             ViewData["List"] = employeesService.GetEmployees();

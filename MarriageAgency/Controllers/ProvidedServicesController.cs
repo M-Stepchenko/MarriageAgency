@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace MarriageAgency.Controllers
 {
+    [Authorize]
     public class ProvidedServicesController : Controller
     {
         MarriageAgencyContext db;
@@ -31,36 +32,24 @@ namespace MarriageAgency.Controllers
         [HttpGet]
         public ActionResult Index(int pageNumber = 1)
         {
-            int employeeId = 0;
-            int serviceId = 0;
-            string userName = "all";
             bool withEmptyItem = true;
             List<SelectListItem> employees = employeesService.GetEmployeeAsSelectListItems(withEmptyItem);
             List<SelectListItem> allServices = allServicesService.GetAllServicesAsSelectListItems(withEmptyItem);
-            if (User.IsInRole("admin"))
-            {
-                HttpContext.Request.Cookies.TryGetValue("EmployeeId", out string? employee);
-                HttpContext.Request.Cookies.TryGetValue("ServiceId", out string? service);
-                HttpContext.Request.Cookies.TryGetValue("Client", out string? client);
-
-                HttpContext.Response.Cookies.Append("EmployeeId", employee);
-                HttpContext.Response.Cookies.Append("ServiceId", service);
-                HttpContext.Response.Cookies.Append("Client", client == null ? "all" : client);
-
-                employeeId = employee == null ? 0 : Convert.ToInt32(employee);
-                serviceId = service == null ? 0 : Convert.ToInt32(service);
-                userName = client == null ? "all" : client;
-            }
-
             
-            var userId = "";
-            if (User.IsInRole("client"))
-            {
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            }
-            ViewData["List"] = providedServicesService.GetProvidedServices(userId, pageNumber, pageSize, employeeId, serviceId, userName);
-            int count = providedServicesService.GetRowCount(userId, pageNumber, pageSize, employeeId, serviceId, userName);
-            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel { EmployeeId = employeeId, ServiceId = serviceId, UserName = userName };
+            HttpContext.Request.Cookies.TryGetValue("EmployeeId", out string? employee);
+            HttpContext.Request.Cookies.TryGetValue("ServiceId", out string? service);
+            HttpContext.Request.Cookies.TryGetValue("Client", out string? client);
+
+            HttpContext.Response.Cookies.Append("EmployeeId", employee);
+            HttpContext.Response.Cookies.Append("ServiceId", service);
+            HttpContext.Response.Cookies.Append("Client", client);
+
+            int employeeId = Convert.ToInt32(employee);
+            int serviceId = Convert.ToInt32(service);
+
+            int count = providedServicesService.GetRowCount(employeeId, serviceId, client);
+            ViewData["List"] = providedServicesService.GetProvidedServices(pageNumber, pageSize, employeeId, serviceId, client);
+            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel { EmployeeId = employeeId, ServiceId = serviceId, UserName = client == "all" ? "" : client, Count = count };
             viewModel.Pagination = new PaginationViewModel(count, pageNumber, pageSize);
 
             ViewBag.Employees = employees;
@@ -68,22 +57,30 @@ namespace MarriageAgency.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = "admin")]
         [HttpPost]
         public ActionResult Index(ProvidedServicesViewModel model)
         {
             HttpContext.Response.Cookies.Append("EmployeeId", model.EmployeeId.ToString());
             HttpContext.Response.Cookies.Append("ServiceId", model.ServiceId.ToString());
-            HttpContext.Response.Cookies.Append("Client", model.UserName == null ? "all" : model.UserName);
+            string client;
+            if (User.IsInRole("admin"))
+            {
+                client = model.UserName == null ? "all" : model.UserName;
+            }
+            else
+            {
+                client = User.FindFirstValue(ClaimTypes.Name);
+            }
+            HttpContext.Response.Cookies.Append("Client", client);
 
             bool withEmptyItem = true;
-            var userId = "";
+           
             List<SelectListItem> employees = employeesService.GetEmployeeAsSelectListItems(withEmptyItem);
             List<SelectListItem> allServices = allServicesService.GetAllServicesAsSelectListItems(withEmptyItem);
 
-            ViewData["List"] = providedServicesService.GetProvidedServices(userId, 1, pageSize, model.EmployeeId, model.ServiceId, model.UserName);
-            int count = providedServicesService.GetRowCount(userId, 1, pageSize, model.EmployeeId, model.ServiceId, model.UserName);
-            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel { EmployeeId = model.EmployeeId, ServiceId = model.ServiceId, UserName = model.UserName };
+            int count = providedServicesService.GetRowCount(model.EmployeeId, model.ServiceId, client);
+            ViewData["List"] = providedServicesService.GetProvidedServices(1, pageSize, model.EmployeeId, model.ServiceId, client);
+            ProvidedServicesViewModel viewModel = new ProvidedServicesViewModel { EmployeeId = model.EmployeeId, ServiceId = model.ServiceId, UserName = model.UserName, Count = count };
             viewModel.Pagination = new PaginationViewModel(count, 1, pageSize);
 
             ViewBag.Employees = employees;

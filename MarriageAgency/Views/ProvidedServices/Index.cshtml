@@ -7,60 +7,71 @@
 @if (User.IsInRole("client"))
 {
     <h1>Ваши заказы</h1>
-    <input type="button" value="Оформление нового заказа"
+    <input type="button" class="btn btn-outline-primary" value="Оформление нового заказа"
            onclick="window.location.href='@Url.Action("NewOrder", "ProvidedServices")'" />
 }
-@if (User.IsInRole("admin"))
+else
 {
     <h1>Оказанные услуги</h1>
+}
 
-    <form method="post" class="mb-4" href="@Url.Action("Index", "ProvidedServices")">
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label asp-for="EmployeeId" class="control-label"></label>
-                <select class="form-select" asp-for="EmployeeId" asp-items="@ViewBag.Employees"></select>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="ServiceId" class="control-label"></label>
-                <select class="form-select" asp-for="ServiceId" asp-items="@ViewBag.AllServices"></select>
-            </div>
+<form method="post" class="mb-4" href="@Url.Action("Index", "ProvidedServices")">
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label asp-for="EmployeeId" class="control-label"></label>
+            <select class="form-select" asp-for="EmployeeId" asp-items="@ViewBag.Employees"></select>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="ServiceId" class="control-label"></label>
+            <select class="form-select" asp-for="ServiceId" asp-items="@ViewBag.AllServices"></select>
+        </div>
+        @if (User.IsInRole("admin"))
+        {
             <div class="form-group col-md-3">
                 <label asp-for="UserName" class="control-label"></label>
                 <input type="text" placeholder="Все клиенты" value="@Model.UserName" asp-for="UserName" class="form-control" />
             </div>
-            <div class="form-group col-md-1" style="align-self: flex-end">
-                <input type="submit" value="Найти" class="btn btn-outline-secondary" />
-            </div>
-        </div>
-    </form>
-}
-
-<TABLE border="1">
-    <TR>
-        <TH>Название услуги</TH>
-        <TH>Описание</TH>
-        <TH>Сотрудник</TH>
-        @if (User.IsInRole("admin"))
-        {
-            <TH>Клиент</TH>
         }
-        <TH>Дата</TH>
-        <TH>Цена</TH>
-    </TR>
+        <div class="form-group col-md-1" style="align-self: flex-end">
+            <input type="submit" value="Найти" class="btn btn-outline-primary" />
+        </div>
+    </div>
+</form>
 
-@foreach (var item in list)
-    {
-    <TR>
-        <TD>@item.Service.Name</TD>
-        <TD>@item.Service.Description</TD>
-        <TD>@item.Employee.Name</TD>
+
+@if(Model.Count > 0)
+{
+    <TABLE border="1" class="table table-striped">
+        <TR>
+            <TH>Название услуги</TH>
+            <TH>Описание</TH>
+            <TH>Сотрудник</TH>
             @if (User.IsInRole("admin"))
             {
-                <TD>@item.Client.Name</TD>
+                <TH>Клиент</TH>
             }
-        <TD>@DateOnly.FromDateTime((DateTime)item.Date)</TD>
-        <TD>@item.Service.Cost</TD>
-    </TR>
-    }
-</TABLE><br>
-@await Html.PartialAsync("Pagination", Model.Pagination)
+            <TH>Дата</TH>
+            <TH>Цена</TH>
+        </TR>
+
+    @foreach (var item in list)
+        {
+        <TR>
+            <TD>@item.Service.Name</TD>
+            <TD>@item.Service.Description</TD>
+            <TD>@item.Employee.Name</TD>
+                @if (User.IsInRole("admin"))
+                {
+                    <TD>@item.Client.Name</TD>
+                }
+            <TD>@DateOnly.FromDateTime((DateTime)item.Date)</TD>
+            <TD>@item.Service.Cost</TD>
+        </TR>
+        }
+    </TABLE><br>
+    @await Html.PartialAsync("Pagination", Model.Pagination)
+}
+else
+{
+    <h3>Данные по запросу не найдены</h3>
+}
